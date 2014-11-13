@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.haha1028</groupId>
-  <artifactId>RandomUtil</artifactId>
+  <artifactId>UnreliableUtil</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>RandomUtil</name>
+  <name>UnreliableUtil</name>
   <url>http://maven.apache.org</url>
 
   <properties>
