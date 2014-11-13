@@ -1,4 +1,4 @@
-package com.github.haha1028.unreliable.util;
+package com.github.haha1028.unreliable.util.concurrent;
 
 import java.util.Random;
 import java.util.concurrent.Callable;
@@ -13,7 +13,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.github.haha1028.unreliable.util.UnreliableExecutorService;
+import com.github.haha1028.unreliable.util.concurrent.UnreliableScheduledThreadPoolExecutor;
 
 public class UnreliableScheduledThreadPoolExecutorTest {
 
@@ -105,7 +105,7 @@ public class UnreliableScheduledThreadPoolExecutorTest {
 	}
 
 	private void testPool(final Receiver receiver, double lostRate, int avgDelay, TimeUnit timeUnit, int nThreads, final int eachThreadTask) throws InterruptedException {
-		final UnreliableExecutorService pool = new UnreliableExecutorService(lostRate, avgDelay, timeUnit);
+		final UnreliableScheduledThreadPoolExecutor pool = new UnreliableScheduledThreadPoolExecutor(lostRate, avgDelay, timeUnit);
 
 		final ExecutorService submitTaskToPoolService = Executors.newFixedThreadPool(poolSize);
 
@@ -188,7 +188,7 @@ public class UnreliableScheduledThreadPoolExecutorTest {
 	}
 
 	private void assertPoolBenchmarkStatus(double lostRate, int avgDelay, TimeUnit timeUnit, final int N, final AtomicLong submittedCount, final Receiver receiver,
-			final UnreliableExecutorService pool) {
+			final UnreliableScheduledThreadPoolExecutor pool) {
 
 		Assert.assertTrue("pool not shutdown", pool.isShutdown());
 		Assert.assertTrue("pool not terminated", pool.isTerminated());

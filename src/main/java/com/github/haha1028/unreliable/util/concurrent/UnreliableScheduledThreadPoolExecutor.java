@@ -1,4 +1,4 @@
-package com.github.haha1028.unreliable.util;
+package com.github.haha1028.unreliable.util.concurrent;
 
 
 import java.util.ArrayList;
@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -17,19 +16,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * an ExecutorService that schedule task with a random delay, and randomly drop task from being executed when the task is put to execution, .
- * <P>
- * The randomly delay is no more than twice of avgDelay time, but actually time before task is executed is not guaranteed.
- * <P>
- * If task is very slow or too many task are scheduled, there could be lag.
- * <P>
- * It is caller's responsibility to check run time status such as getLag==0 to ensure the executor is running as expected
- * 
- * @author Wentao Liu
- * 
- */
-public final class UnreliableExecutorService implements ExecutorService {
+
+public final class UnreliableScheduledThreadPoolExecutor implements UnrelabileExecutorService {
 
 	/**
 	 * chance of drop task. 0.2= 20% chance.
@@ -78,7 +66,7 @@ public final class UnreliableExecutorService implements ExecutorService {
 	/**
 	 * default avg dealy and default lostRate.
 	 */
-	public UnreliableExecutorService() {
+	public UnreliableScheduledThreadPoolExecutor() {
 		this(0, 0, TimeUnit.MILLISECONDS);
 	}
 
@@ -95,7 +83,7 @@ public final class UnreliableExecutorService implements ExecutorService {
 	 *            <P>
 	 *            It is caller's responsibility to check totalDelayedTime to ensure the Executor is running as expected
 	 */
-	public UnreliableExecutorService(double lostRate, int avgDelay, TimeUnit delayUnit) {
+	public UnreliableScheduledThreadPoolExecutor(double lostRate, int avgDelay, TimeUnit delayUnit) {
 
 		this.avgDelay = avgDelay;
 		this.maxDelay = delayUnit.toMillis(avgDelay) * 2;

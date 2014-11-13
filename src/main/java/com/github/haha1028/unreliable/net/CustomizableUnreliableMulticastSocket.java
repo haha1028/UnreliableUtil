@@ -2,13 +2,12 @@ package com.github.haha1028.unreliable.net;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.MulticastSocket;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import com.github.haha1028.unreliable.util.UnreliableExecutorService;
+import com.github.haha1028.unreliable.util.concurrent.UnreliableScheduledThreadPoolExecutor;
 
 /**
  * Customizable Unreliable MulticastSocket. *
@@ -19,11 +18,11 @@ import com.github.haha1028.unreliable.util.UnreliableExecutorService;
  * @author Wentao Liu
  * 
  */
-final class CustomizableUnreliableMulticastSocket extends MulticastSocket {
+public final class CustomizableUnreliableMulticastSocket extends UnreliableMulticastSocket {
 	/**
 	 * an troubler that randomly drop task , then randomly delay task execution.
 	 */
-	UnreliableExecutorService troubler;
+	UnreliableScheduledThreadPoolExecutor troubler;
 
 	/**
 	 * 
@@ -37,8 +36,8 @@ final class CustomizableUnreliableMulticastSocket extends MulticastSocket {
 	 * @throws IOException
 	 */
 	public CustomizableUnreliableMulticastSocket(int port, double lostRate, int avgDelay) throws IOException {
-		super(port);
-		this.troubler = new UnreliableExecutorService(lostRate, avgDelay, TimeUnit.MILLISECONDS);
+		super(port, lostRate, avgDelay);
+		this.troubler = new UnreliableScheduledThreadPoolExecutor(lostRate, avgDelay, TimeUnit.MILLISECONDS);
 	}
 
 	/**
