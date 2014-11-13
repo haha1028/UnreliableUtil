@@ -1,4 +1,4 @@
-package com.github.haha1028.unreliable;
+package com.github.haha1028.unreliable.net;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.Test;
 
-import com.github.haha1028.unreliable.CustomizableUnreliableMulticastSocket;
+import com.github.haha1028.unreliable.net.CustomizableUnreliableMulticastSocket;
 
 public class CustomizableUnreliableMulticastSocketTest {
 	/**

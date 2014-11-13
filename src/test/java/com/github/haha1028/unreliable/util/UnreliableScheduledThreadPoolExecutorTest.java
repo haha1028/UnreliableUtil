@@ -1,4 +1,4 @@
-package com.github.haha1028.unreliable;
+package com.github.haha1028.unreliable.util;
 
 import java.util.Random;
 import java.util.concurrent.Callable;
@@ -13,7 +13,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.github.haha1028.unreliable.UnreliableExecutorService;
+import com.github.haha1028.unreliable.util.UnreliableExecutorService;
 
 public class UnreliableScheduledThreadPoolExecutorTest {
 
