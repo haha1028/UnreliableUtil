@@ -5,11 +5,12 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.Test;
 
-import com.github.haha1028.unreliable.net.CustomizableUnreliableMulticastSocket;
+import com.github.haha1028.unreliable.util.UnreliablePolicy;
 
 public class CustomizableUnreliableMulticastSocketTest {
 	/**
@@ -24,8 +25,8 @@ public class CustomizableUnreliableMulticastSocketTest {
 		final long interval = 1500;
 
 		final InetAddress mcastaddr = InetAddress.getByName("224.0.0.0");
-
-		final CustomizableUnreliableMulticastSocket unreliable = new CustomizableUnreliableMulticastSocket(port, lostRate, avgDelay);
+		UnreliablePolicy policy = new UnreliablePolicy(lostRate, avgDelay, TimeUnit.MILLISECONDS);
+		final CustomizableUnreliableMulticastSocket unreliable = new CustomizableUnreliableMulticastSocket(port, policy);
 		unreliable.joinGroup(mcastaddr);
 		unreliable.setTimeToLive(0);
 

@@ -5,7 +5,6 @@ import java.net.DatagramPacket;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import com.github.haha1028.unreliable.util.UnreliablePolicy;
 import com.github.haha1028.unreliable.util.concurrent.UnreliableScheduledThreadPoolExecutor;
@@ -36,9 +35,9 @@ public final class CustomizableUnreliableMulticastSocket extends UnreliableMulti
 	 *            statistically after avgDelay sent datagram to underlying socket.
 	 * @throws IOException
 	 */
-	public CustomizableUnreliableMulticastSocket(int port, double lostRate, int avgDelay) throws IOException {
-		super(port, lostRate, avgDelay);
-		this.troubler = new UnreliableScheduledThreadPoolExecutor(new UnreliablePolicy(lostRate, avgDelay, TimeUnit.MILLISECONDS));
+	public CustomizableUnreliableMulticastSocket(int port, UnreliablePolicy policy) throws IOException {
+		super(port,policy);
+		this.troubler = new UnreliableScheduledThreadPoolExecutor(policy);
 	}
 
 	/**

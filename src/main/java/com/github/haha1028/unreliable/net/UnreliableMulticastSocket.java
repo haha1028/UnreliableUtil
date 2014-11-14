@@ -3,6 +3,8 @@ package com.github.haha1028.unreliable.net;
 import java.io.IOException;
 import java.net.MulticastSocket;
 
+import com.github.haha1028.unreliable.util.UnreliablePolicy;
+
 public abstract class UnreliableMulticastSocket extends MulticastSocket {
 	/**
 	 * 
@@ -15,7 +17,7 @@ public abstract class UnreliableMulticastSocket extends MulticastSocket {
 	 *            statistically after avgDelay sent datagram to underlying socket.
 	 * @throws IOException
 	 */
-	public UnreliableMulticastSocket(int port, double lostRate, int avgDelay) throws IOException {
+	public UnreliableMulticastSocket(int port, UnreliablePolicy policy) throws IOException {
 		super(port);
 	}
 }
