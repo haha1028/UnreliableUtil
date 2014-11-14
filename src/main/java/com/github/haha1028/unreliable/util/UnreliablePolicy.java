@@ -1,7 +1,9 @@
 package com.github.haha1028.unreliable.util;
 
 import java.util.concurrent.TimeUnit;
-
+/**
+ * http://commons.apache.org/proper/commons-math/apidocs/index.html is a better choice.
+ **/
 public class UnreliablePolicy {
 	private static UnreliablePolicy RELIABLE_POLICY = new UnreliablePolicy(0, 0, TimeUnit.DAYS);
 
