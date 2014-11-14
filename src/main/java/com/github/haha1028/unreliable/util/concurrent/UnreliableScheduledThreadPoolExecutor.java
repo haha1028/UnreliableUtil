@@ -20,24 +20,6 @@ import com.github.haha1028.unreliable.util.UnreliablePolicy;
 public final class UnreliableScheduledThreadPoolExecutor implements UnrelabileExecutorService {
 
 	/**
-	 * chance of drop task. 0.2= 20% chance.
-	 */
-	private volatile double lostRate = 0;
-
-	/**
-	 * avgDelay to actually call task.
-	 */
-	private int avgDelay = 0;
-
-	/**
-	 * time unit to delay.
-	 */
-	/**
-	 * implementation internal use. maxDelay =2*avgDelay in milliseconds
-	 */
-	private long maxDelay = 0;
-
-	/**
 	 * actual pool to exec task.
 	 */
 	private int poolSize = Runtime.getRuntime().availableProcessors();;
@@ -61,7 +43,7 @@ public final class UnreliableScheduledThreadPoolExecutor implements UnrelabileEx
 
 	private boolean TERMINATED = false;
 	private boolean SHUTDOWN = false;
-
+	private UnreliablePolicy policy;
 
 	public UnreliableScheduledThreadPoolExecutor() {
 		this(UnreliablePolicy.RELIABLE_POLICY());
@@ -75,10 +57,8 @@ public final class UnreliableScheduledThreadPoolExecutor implements UnrelabileEx
 	 * It is caller's responsibility to check totalDelayedTime to ensure the Executor is running as expected
 	 */
 	public UnreliableScheduledThreadPoolExecutor(UnreliablePolicy policy) {
+		this.policy = policy;
 
-		this.avgDelay = policy.getAvgDelay();
-		this.maxDelay = policy.getDelayUnit().toMillis(avgDelay) * 2;
-		this.lostRate = policy.getLostRate();
 		for (int i = 0; i < scheduledThreadPoolExecutors.length; i++) {
 			ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = createScheduledPoolExecutor();
 			scheduledThreadPoolExecutors[i] = scheduledThreadPoolExecutor;
@@ -100,8 +80,6 @@ public final class UnreliableScheduledThreadPoolExecutor implements UnrelabileEx
 		};
 		return scheduledThreadPoolExecutor;
 	}
-
-	
 
 	/**
 	 * 
@@ -280,7 +258,7 @@ public final class UnreliableScheduledThreadPoolExecutor implements UnrelabileEx
 
 	private boolean shouldDrop() {
 		double lost = ThreadLocalRandom.current().nextDouble();
-		if (lost < lostRate) {
+		if (lost < policy.getLostRate()) {
 
 			return true;
 		}
@@ -296,8 +274,8 @@ public final class UnreliableScheduledThreadPoolExecutor implements UnrelabileEx
 	private long checkAndGetDelay() {
 		long delay = 0;
 
-		if (maxDelay > 0) {
-			delay = ThreadLocalRandom.current().nextInt((int) maxDelay);
+		if (this.policy.getMaxDelay() > 0) {
+			delay = ThreadLocalRandom.current().nextInt((int) policy.getMaxDelay());
 
 			/**
 			 * adjust delay time according to lag.
@@ -323,7 +301,7 @@ public final class UnreliableScheduledThreadPoolExecutor implements UnrelabileEx
 	 */
 	long getLag() {
 		long currentAvgDelay = (long) (1.0 * getTotalDelayedTime() / (this.getFinishTaskCount() + 1));
-		long expectAvgDelay = this.maxDelay / 2;
+		long expectAvgDelay = this.policy.getAvgDelay() / 2;
 		long lag = currentAvgDelay - expectAvgDelay;
 
 		return lag;
