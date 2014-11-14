@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import com.github.haha1028.unreliable.util.UnreliablePolicy;
 import com.github.haha1028.unreliable.util.concurrent.UnreliableScheduledThreadPoolExecutor;
 
 /**
@@ -37,7 +38,7 @@ public final class CustomizableUnreliableMulticastSocket extends UnreliableMulti
 	 */
 	public CustomizableUnreliableMulticastSocket(int port, double lostRate, int avgDelay) throws IOException {
 		super(port, lostRate, avgDelay);
-		this.troubler = new UnreliableScheduledThreadPoolExecutor(lostRate, avgDelay, TimeUnit.MILLISECONDS);
+		this.troubler = new UnreliableScheduledThreadPoolExecutor(new UnreliablePolicy(lostRate, avgDelay, TimeUnit.MILLISECONDS));
 	}
 
 	/**

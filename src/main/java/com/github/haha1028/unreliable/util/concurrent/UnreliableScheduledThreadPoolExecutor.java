@@ -1,6 +1,5 @@
 package com.github.haha1028.unreliable.util.concurrent;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,6 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.github.haha1028.unreliable.util.UnreliablePolicy;
 
 public final class UnreliableScheduledThreadPoolExecutor implements UnrelabileExecutorService {
 
@@ -32,7 +32,6 @@ public final class UnreliableScheduledThreadPoolExecutor implements UnrelabileEx
 	/**
 	 * time unit to delay.
 	 */
-	private TimeUnit delayUnit = TimeUnit.MILLISECONDS;
 	/**
 	 * implementation internal use. maxDelay =2*avgDelay in milliseconds
 	 */
@@ -63,32 +62,23 @@ public final class UnreliableScheduledThreadPoolExecutor implements UnrelabileEx
 	private boolean TERMINATED = false;
 	private boolean SHUTDOWN = false;
 
-	/**
-	 * default avg dealy and default lostRate.
-	 */
+
 	public UnreliableScheduledThreadPoolExecutor() {
-		this(0, 0, TimeUnit.MILLISECONDS);
+		this(UnreliablePolicy.RELIABLE_POLICY());
 	}
 
 	/**
 	 * 
-	 * 
-	 * @param lostRate
-	 *            chance of drop task. 0.2= 20% chance
-	 * @param avgDelay
-	 *            . avgDelay to actually call task.
-	 *            <P>
-	 *            task are expected be executed within twice of avgDelay time, but this is not guaranteed. if task exec is very slow or too many task were scheduled, the actual avg
-	 *            dealy could be much longer than expected.
-	 *            <P>
-	 *            It is caller's responsibility to check totalDelayedTime to ensure the Executor is running as expected
+	 * task are expected be executed within twice of avgDelay time, but this is not guaranteed. if task exec is very slow or too many task were scheduled, the actual avg dealy
+	 * could be much longer than expected.
+	 * <P>
+	 * It is caller's responsibility to check totalDelayedTime to ensure the Executor is running as expected
 	 */
-	public UnreliableScheduledThreadPoolExecutor(double lostRate, int avgDelay, TimeUnit delayUnit) {
+	public UnreliableScheduledThreadPoolExecutor(UnreliablePolicy policy) {
 
-		this.avgDelay = avgDelay;
-		this.maxDelay = delayUnit.toMillis(avgDelay) * 2;
-		this.delayUnit = delayUnit;
-		this.lostRate = lostRate;
+		this.avgDelay = policy.getAvgDelay();
+		this.maxDelay = policy.getDelayUnit().toMillis(avgDelay) * 2;
+		this.lostRate = policy.getLostRate();
 		for (int i = 0; i < scheduledThreadPoolExecutors.length; i++) {
 			ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = createScheduledPoolExecutor();
 			scheduledThreadPoolExecutors[i] = scheduledThreadPoolExecutor;
@@ -111,29 +101,7 @@ public final class UnreliableScheduledThreadPoolExecutor implements UnrelabileEx
 		return scheduledThreadPoolExecutor;
 	}
 
-	/**
-	 * 
-	 * @return user expect avgDelay
-	 */
-	public int getAvgDelay() {
-		return avgDelay;
-	}
-
-	/**
-	 * 
-	 * @return user expect avgDelay TimeUnit
-	 */
-	public TimeUnit getDelayUnit() {
-		return delayUnit;
-	}
-
-	/**
-	 * 
-	 * @return user expect lostRate
-	 */
-	public double getLostRate() {
-		return lostRate;
-	}
+	
 
 	/**
 	 * 

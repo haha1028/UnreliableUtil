@@ -13,6 +13,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import com.github.haha1028.unreliable.util.UnreliablePolicy;
 import com.github.haha1028.unreliable.util.concurrent.UnreliableScheduledThreadPoolExecutor;
 
 public class UnreliableScheduledThreadPoolExecutorTest {
@@ -105,7 +106,7 @@ public class UnreliableScheduledThreadPoolExecutorTest {
 	}
 
 	private void testPool(final Receiver receiver, double lostRate, int avgDelay, TimeUnit timeUnit, int nThreads, final int eachThreadTask) throws InterruptedException {
-		final UnreliableScheduledThreadPoolExecutor pool = new UnreliableScheduledThreadPoolExecutor(lostRate, avgDelay, timeUnit);
+		final UnreliableScheduledThreadPoolExecutor pool = new UnreliableScheduledThreadPoolExecutor(new UnreliablePolicy(lostRate, avgDelay, timeUnit));
 
 		final ExecutorService submitTaskToPoolService = Executors.newFixedThreadPool(poolSize);
 
@@ -212,8 +213,9 @@ public class UnreliableScheduledThreadPoolExecutorTest {
 
 		double delayAbsError = Math.abs(actualAvgDelay - expectAvgDelay);
 
-		System.out.println("assertPoolBenchmarkStatus  rateError =[" + lostRateRelatedError + "] delayAbsError =[" + delayAbsError + "]  delayError =[" + delayRelatedError + "]  actualAvgDelay =[" + actualAvgDelay
-				+ "] currentLag =[" + pool.getLag() + "] actualLostRate =[" + actualLostRate + "]expectAvgDelay =[" + expectAvgDelay + "]");
+		System.out.println("assertPoolBenchmarkStatus  rateError =[" + lostRateRelatedError + "] delayAbsError =[" + delayAbsError + "]  delayError =[" + delayRelatedError
+				+ "]  actualAvgDelay =[" + actualAvgDelay + "] currentLag =[" + pool.getLag() + "] actualLostRate =[" + actualLostRate + "]expectAvgDelay =[" + expectAvgDelay
+				+ "]");
 
 		double minRelatedError = 0.95;
 		double maxRelatedError = 1.05;
